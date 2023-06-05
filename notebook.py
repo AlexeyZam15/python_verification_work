@@ -35,3 +35,9 @@ class Notebook:
             notes += f'{i.id:{self.__max_id_width}}|{i.title:{self.__max_title_width}}|{i.date_time}\n'
         return notes
 
+    def csv_format(self):
+        notes = ''
+        for i in self.__notes:
+            notes += f'{i.id};{i.title};{i.msg};{i.date_time}\n'
+        return notes
+

@@ -1,15 +1,11 @@
-from notebook import Notebook
-from view import View
+from app import App
 
 
 def main():
-    notebook = Notebook('Тест')
-    view = View(notebook)
-    notebook.add('Проверка1', 'Тест1')
-    notebook.add('Проверка2', 'Тест2')
-    notebook.add('45345435345345', 'Тест4')
-    view.start()
-    view.show_notes()
+
+    app = App()
+
+    app.start()
 
 
 if __name__ == "__main__":
