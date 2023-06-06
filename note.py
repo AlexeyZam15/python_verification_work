@@ -3,6 +3,7 @@ import datetime
 
 
 class Note:
+    field = ''
 
     def __init__(self, id_counter, title: str, msg: str,
                  date_time=datetime.datetime.today().strftime("%d-%b-%Y %H:%M:%S")):
