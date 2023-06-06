@@ -39,8 +39,9 @@ class App:
         functions = {'1': self.show_notes,
                      '2': self.add_notes,
                      '3': self.find_notes,
+                     '4': self.change_notes,
                      }
-        # '4': view.change_notes,
+
         # '5': view.delete_notes
 
         action = None
@@ -57,7 +58,14 @@ class App:
         self.__notebook.add_note(*self.__view.add_notes())
 
     def find_notes(self):
-        field, value = self.__view.find_field(self.__notebook.fields)
+        field, value = self.__view.find_field(list(self.__notebook.fields.keys()), 'поиска')
         if field != 'q':
             self.__view.show_notes(self.__notebook.find_notes(field, value))
 
+    def change_notes(self):
+        record_id = self.__view.check_id_note('изменить')
+        if record_id != 'q':
+            field, value = self.__view.find_field(list(self.__notebook.fields.keys())[1:3], 'изменения')
+            if field != 'q':
+                if self.__view.confirmation('Подтвердите изменение записи'):
+                    self.__notebook.change_note(int(record_id), field, value)

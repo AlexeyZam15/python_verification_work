@@ -1,10 +1,14 @@
+from notebook import Notebook
+
+
 class View:
 
-    def __init__(self, notebook):
+    def __init__(self, notebook: Notebook):
         self.__notebook = notebook
         print(f'Программа Заметки запущена')
 
-    def wait_action(self, actions, functions):
+    @staticmethod
+    def wait_action(actions, functions):
         print('Какое действие хотите совершить?', *[f'{i} - {actions[i]}' for i in actions])
         action = input()
         while action not in actions:
@@ -19,32 +23,36 @@ class View:
         return action
 
     @staticmethod
-    def show_notes(txt):
-        print(txt)
+    def show_notes(notes):
+        if notes:
+            print(notes)
+        else:
+            print('Записей не найдено')
 
     def add_notes(self):
         print('Введите заголовок сообщения')
         title = input()
         print('Введите текст сообщения')
         msg = input()
-        confirm = self.__confirmation('добавление')
-        if confirm == 'y':
+        confirm = self.confirmation('Подтвердите добавление записи')
+        if confirm:
             return title, msg
 
     @staticmethod
-    def __confirmation(text: str):
-        confirm = input(f"Подтвердите {text} записи: y - да, n - нет\n")
+    def confirmation(text: str):
+        confirm = input(f"{text} y - да, n - нет\n")
         while confirm not in ('y', 'n'):
             print('Введены неверные данные')
-            confirm = input(f"Подтвердите {text} записи: y - да, n - нет\n")
-        return confirm
+            confirm = input(f"{text}: y - да, n - нет\n")
+        return True if confirm == 'y' else False
 
     @staticmethod
     def end(self):
         print('Программа Заметки заверщена')
 
-    def find_field(self, fields: list):
-        print('Выберите поле для поиска:')
+    @staticmethod
+    def find_field(fields: list, action_word: str):
+        print(f'Выберите поле для {action_word}:')
         text = ''
         text = ', '.join([f'{i} - {fields[i]}' for i in range(len(fields))]) + ', q - выйти'
         choices = [str(i) for i in range(len(fields))]
@@ -60,3 +68,17 @@ class View:
             return fields[int(choice)], condition
         else:
             return 'q', 'q'
+
+    def check_id_note(self, action_word: str):
+        confirm = False
+        id_note = ''
+        while not confirm:
+            id_note = input(f'Введите id записи которую хотите {action_word}, q - отмена\n')
+            while id_note != 'q' and not self.__notebook.find_notes('id', id_note):
+                print('Записей с таким id нет')
+                id_note = input(f'Введите id записи которую хотите {action_word}, q - отмена\n')
+            if id_note == 'q':
+                return id_note
+            self.show_notes(self.__notebook.find_notes('id', id_note))
+            confirm = self.confirmation(f'Вы хотите {action_word} данную запись?')
+        return id_note
