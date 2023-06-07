@@ -4,12 +4,14 @@ import datetime
 
 class Note:
 
-    def __init__(self, id_counter, title: str, msg: str):
+    def __init__(self, id_counter, title: str, msg: str,
+                 creation_date=datetime.datetime.today().strftime("%d-%b-%Y %H:%M:%S"),
+                 last_change_date=datetime.datetime.today().strftime("%d-%b-%Y %H:%M:%S")):
         self.__id = str(id_counter)
         self.__title = title
         self.__msg = msg
-        self.__creation_date = datetime.datetime.today().strftime("%d-%b-%Y %H:%M:%S")
-        self.__last_change_date = self.__creation_date
+        self.__creation_date = creation_date
+        self.last_change_date = last_change_date
 
     def __str__(self):
         return f'{self.__id}|{self.__title}|{self.__creation_date}'

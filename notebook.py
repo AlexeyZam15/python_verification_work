@@ -4,6 +4,7 @@ import datetime
 
 class Notebook:
     __fields = {'id': 4, 'title': 30, 'msg': 60, 'creation_date': 25, 'last_change_date': 25}
+    __id_count = 0
 
     def __init__(self, name: str):
         self.__notes = list()
@@ -13,7 +14,8 @@ class Notebook:
         self.__name = name
 
     def add_note(self, title: str, msg: str):
-        note = Note(len(self.__notes), title, msg)
+        Notebook.__id_count += 1
+        note = Note(Notebook.__id_count, title, msg)
         self.__notes.append(note)
 
     @property
@@ -50,8 +52,19 @@ class Notebook:
         return self.__fields
 
     def change_note(self, id_note, field, value):
-        setattr(self.__notes[id_note], field, value)
-        self.__notes[id_note].last_change_date = datetime.datetime.today().strftime("%d-%b-%Y %H:%M:%S")
+        note = self.find_notes('id', str(id_note)).__notes[1]
+        setattr(note, field, value)
+        note.last_change_date = datetime.datetime.today().strftime("%d-%b-%Y %H:%M:%S")
+
+    def delete_note(self, id_note):
+        self.__notes.remove(self.find_notes('id', str(id_note)).__notes[1])
 
     def __len__(self):
         return len(self.__notes) - 1
+
+    def add_notes_from_csv(self, text: str):
+        lines = text.split('\n')
+        for i in lines[1:-1]:
+            attrs = i.split(';')
+            Notebook.__id_count = int(attrs[0])
+            self.__notes.append(Note(attrs[0], attrs[1], attrs[2], attrs[3], attrs[4]))

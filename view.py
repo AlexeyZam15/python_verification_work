@@ -19,7 +19,7 @@ class View:
         if action == 'q':
             print('Программа Заметки завершена')
         else:
-            functions[action]()
+            action = functions[action]()
         return action
 
     @staticmethod
@@ -37,6 +37,7 @@ class View:
         confirm = self.confirmation('Подтвердите добавление записи')
         if confirm:
             return title, msg
+        return 'q', 'q'
 
     @staticmethod
     def confirmation(text: str):
