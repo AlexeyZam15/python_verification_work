@@ -12,6 +12,24 @@ class Notebook:
         self.__notes[0].creation_date = 'creation date'
         self.__notes[0].last_change_date = 'last change date'
         self.__name = name
+        self._current_index = 1
+
+    def __iter__(self):
+        self._current_index = 0
+        return self
+
+    def __next__(self):
+        if self._current_index < len(self.__notes):
+            note = self.__notes[self._current_index]
+            self._current_index += 1
+            return note
+        raise StopIteration
+
+    def __getitem__(self, key):
+        return self.__notes[key]
+
+    def __contains__(self, note):
+        return self.__notes.__contains__(note)
 
     def add_note(self, title: str, msg: str):
         Notebook.__id_count += 1
@@ -31,8 +49,6 @@ class Notebook:
         for i in self.__notes:
             notes += '|'.join([f'{getattr(i, j)[:self.fields[j]]:{self.fields[j]}}' for j in self.__fields])
             notes += '\n'
-        # for i in self.__notes:
-        #     notes += f'{i.id:{self.__max_id_width}}|{i.title:{self.__max_title_width}}|{i.creation_date}\n'
         return notes
 
     def csv_format(self):
@@ -46,6 +62,13 @@ class Notebook:
         temp_notebook = Notebook('Временный')
         temp_notebook.__notes += list(filter(lambda x: value in getattr(x, field), self.__notes))
         return temp_notebook
+
+    def read_note(self):
+        notes = ''
+        for i in self.__notes:
+            notes += '|'.join([f'{getattr(i, j):{self.fields[j]}}' for j in self.__fields if j != 'msg'])
+            notes += '\n'
+        return notes + f'msg:\n{self[1]}'.replace('\\n', '\n')
 
     @property
     def fields(self):

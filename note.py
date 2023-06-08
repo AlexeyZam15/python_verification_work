@@ -14,7 +14,7 @@ class Note:
         self.last_change_date = last_change_date
 
     def __str__(self):
-        return f'{self.__id}|{self.__title}|{self.__creation_date}'
+        return self.__msg
 
     @property
     def id(self):

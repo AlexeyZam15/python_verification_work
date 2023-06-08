@@ -9,8 +9,7 @@ class View:
 
     @staticmethod
     def wait_action(actions, functions):
-        print('Какое действие хотите совершить?', *[f'{i} - {actions[i]}' for i in actions])
-        action = input()
+        action = None
         while action not in actions:
             print('Какое действие хотите совершить?', *[f'{i} - {actions[i]}' for i in actions])
             action = input()
@@ -32,8 +31,14 @@ class View:
     def add_notes(self):
         print('Введите заголовок сообщения')
         title = input()
-        print('Введите текст сообщения')
-        msg = input()
+        print("Введите текст сообщения. q - сохранить")
+        msg = []
+        line = ''
+        while line != 'q':
+            line = input()
+            if line != 'q':
+                msg.append(line)
+        msg = '\\n'.join(msg)
         confirm = self.confirmation('Подтвердите добавление записи')
         if confirm:
             return title, msg
@@ -43,7 +48,7 @@ class View:
     def confirmation(text: str):
         confirm = input(f"{text} y - да, n - нет\n")
         while confirm not in ('y', 'n'):
-            print('Введены неверные данные')
+            print('Неправильный ввод')
             confirm = input(f"{text}: y - да, n - нет\n")
         return True if confirm == 'y' else False
 
@@ -53,17 +58,16 @@ class View:
 
     @staticmethod
     def find_field(fields: list, action_word: str):
-        print(f'Выберите поле для {action_word}:')
         text = ''
         text = ', '.join([f'{i} - {fields[i]}' for i in range(len(fields))]) + ', q - выйти'
         choices = [str(i) for i in range(len(fields))]
-        print(text)
-        choice = input()
+        choice = None
         while choice not in choices and choice != 'q':
-            print('Введены неверные данные')
-            print('Выберите характеристику:')
+            print(f'Выберите поле для {action_word}:')
             print(text)
             choice = input()
+            if choice not in choices and choice != 'q':
+                print('Неправильный ввод')
         if choice != 'q':
             condition = input('Введите значение\n')
             return fields[int(choice)], condition

@@ -20,18 +20,20 @@ class App:
         finally:
             file.close()
 
-        actions = {'1': 'чтение',
-                   '2': 'запись',
-                   '3': 'поиск',
-                   '4': 'изменение',
-                   '5': 'удаление',
+        actions = {'1': 'список заметок',
+                   '2': 'чтение',
+                   '3': 'добавить',
+                   '4': 'поиск',
+                   '5': 'изменить',
+                   '6': 'удалить',
                    'q': 'выход'}
 
         functions = {'1': self.__show_notes,
-                     '2': self.__add_notes,
-                     '3': self.__find_notes,
-                     '4': self.__change_notes,
-                     '5': self.__delete_notes
+                     '2': self.__choose_note,
+                     '3': self.__add_notes,
+                     '4': self.__find_notes,
+                     '5': self.__change_notes,
+                     '6': self.__delete_notes
                      }
 
         action = None
@@ -71,3 +73,8 @@ class App:
             if self.__view.confirmation('Подтвердите удаление записи'):
                 self.__notebook.delete_note(int(record_id))
                 return 'save'
+
+    def __choose_note(self):
+        record_id = self.__view.check_id_note('прочитать')
+        if record_id != 'q':
+            self.__view.show_notes(self.__notebook.find_notes('id', record_id).read_note())
