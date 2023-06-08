@@ -28,21 +28,10 @@ class View:
         else:
             print('Записей не найдено')
 
-    def add_notes(self):
+    @staticmethod
+    def field_input():
         print('Введите заголовок сообщения')
-        title = input()
-        print("Введите текст сообщения. q - сохранить")
-        msg = []
-        line = ''
-        while line != 'q':
-            line = input()
-            if line != 'q':
-                msg.append(line)
-        msg = '\\n'.join(msg)
-        confirm = self.confirmation('Подтвердите добавление записи')
-        if confirm:
-            return title, msg
-        return 'q', 'q'
+        return input()
 
     @staticmethod
     def confirmation(text: str):
@@ -56,8 +45,7 @@ class View:
     def end(self):
         print('Программа Заметки заверщена')
 
-    @staticmethod
-    def find_field(fields: list, action_word: str):
+    def find_field(self, fields: list, action_word: str):
         text = ''
         text = ', '.join([f'{i} - {fields[i]}' for i in range(len(fields))]) + ', q - выйти'
         choices = [str(i) for i in range(len(fields))]
@@ -69,8 +57,12 @@ class View:
             if choice not in choices and choice != 'q':
                 print('Неправильный ввод')
         if choice != 'q':
-            condition = input('Введите значение\n')
-            return fields[int(choice)], condition
+            if fields[int(choice)] == 'msg':
+                value = self.msg_input()
+            else:
+                print('Введите значение')
+                value = input()
+            return fields[int(choice)], value
         else:
             return 'q', 'q'
 
@@ -78,12 +70,24 @@ class View:
         confirm = False
         id_note = ''
         while not confirm:
-            id_note = input(f'Введите id записи которую хотите {action_word}, q - отмена\n')
+            id_note = input(f'Введите id записи которую хотите {action_word}, q - выход\n')
             while id_note != 'q' and not self.__notebook.find_notes('id', id_note):
                 print('Записей с таким id нет')
-                id_note = input(f'Введите id записи которую хотите {action_word}, q - отмена\n')
+                id_note = input(f'Введите id записи которую хотите {action_word}, q - выход\n')
             if id_note == 'q':
                 return id_note
             self.show_notes(self.__notebook.find_notes('id', id_note))
             confirm = self.confirmation(f'Вы хотите {action_word} данную запись?')
         return id_note
+
+    @staticmethod
+    def msg_input():
+        print("Введите текст сообщения. y - сохранить")
+        msg = []
+        line = ''
+        while line != 'y':
+            line = input()
+            if line != 'y':
+                msg.append(line)
+        msg = '\\n'.join(msg)
+        return msg

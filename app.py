@@ -20,7 +20,7 @@ class App:
         finally:
             file.close()
 
-        actions = {'1': 'список заметок',
+        actions = {'1': 'список',
                    '2': 'чтение',
                    '3': 'добавить',
                    '4': 'поиск',
@@ -48,8 +48,9 @@ class App:
         self.__view.show_notes(self.__notebook)
 
     def __add_notes(self):
-        title, msg = self.__view.add_notes()
-        if title != 'q':
+        title, msg = self.__view.field_input(), self.__view.msg_input()
+        confirm = self.__view.confirmation('Подтвердите добавление записи.')
+        if confirm:
             self.__notebook.add_note(title, msg)
             return 'save'
 
@@ -70,9 +71,8 @@ class App:
     def __delete_notes(self):
         record_id = self.__view.check_id_note('удалить')
         if record_id != 'q':
-            if self.__view.confirmation('Подтвердите удаление записи'):
-                self.__notebook.delete_note(int(record_id))
-                return 'save'
+            self.__notebook.delete_note(int(record_id))
+            return 'save'
 
     def __choose_note(self):
         record_id = self.__view.check_id_note('прочитать')

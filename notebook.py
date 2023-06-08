@@ -60,15 +60,11 @@ class Notebook:
 
     def find_notes(self, field, value):
         temp_notebook = Notebook('Временный')
-        temp_notebook.__notes += list(filter(lambda x: value in getattr(x, field), self.__notes))
+        if field == 'id':
+            temp_notebook.__notes += list(filter(lambda x: getattr(x, field) == value, self.__notes))
+        else:
+            temp_notebook.__notes += list(filter(lambda x: value in getattr(x, field), self.__notes))
         return temp_notebook
-
-    def read_note(self):
-        notes = ''
-        for i in self.__notes:
-            notes += '|'.join([f'{getattr(i, j):{self.fields[j]}}' for j in self.__fields if j != 'msg'])
-            notes += '\n'
-        return notes + f'msg:\n{self[1]}'.replace('\\n', '\n')
 
     @property
     def fields(self):
@@ -91,3 +87,9 @@ class Notebook:
             attrs = i.split(';')
             Notebook.__id_count = int(attrs[0])
             self.__notes.append(Note(attrs[0], attrs[1], attrs[2], attrs[3], attrs[4]))
+
+    def read_note(self):
+        notes = ''
+        notes += '\n'.join([f'{j}: {getattr(self.__notes[1], j):{self.fields[j]}}' for j in self.__fields if j != 'msg'])
+        notes += '\n'
+        return notes + f'msg:\n{self[1]}'.replace('\\n', '\n')
